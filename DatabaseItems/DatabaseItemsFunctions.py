@@ -34,12 +34,14 @@ def createTargetZones(timeFrequencyPoints):
     return targetZones
 
 
-def timeFrequencyPointsCreateDEMONSTRATION():
-    timeFrequencyPoints = [1, 2, 3, 4, 5]
-    targetSize = 3
+"""
+    function name: createAnchorPoints
+    input: timeFrequencyPoints - as the name suggest, a list of tuples. targetZones - a list of point lists. 
+    output: a dictionary. where the key is an anchor point and the value is a list of points - the target Zone. 
+    (5 following points, 3 points to the right [where the positive time axis is to the right] of the anchor point).
+    operation: initializes the 'anchorPointTargetZoneDict' variable for the Song and Recording objects.
+    """
 
-    targetZones = []
-    for i in range(len(timeFrequencyPoints) - targetSize + 1):
-        targetZones.append([timeFrequencyPoints[i + j] for j in range(targetSize)])
 
-    print(targetZones)
+def createAnchorPoints(timeFrequencyPoints, targetZones):
+    return {timeFrequencyPoints[i - 3]: targetZones[i] for i in range(3, len(targetZones))}

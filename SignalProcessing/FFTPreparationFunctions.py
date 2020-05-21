@@ -1,4 +1,9 @@
 from ImportsFile import *
+import numpy
+import scipy
+import scipy.signal
+from pylab import *
+from SignalProcessing.SpectrogramFilteringFunctions import *
 
 '''
     function mame: stereoToMonoConvert
@@ -74,9 +79,6 @@ def hammingWindow(data):
     return result
 
 
-
-
-
 '''
 function name: 
 downSample input: 
@@ -133,3 +135,26 @@ def downSample(data):
     if not length % 4 == 0: temp.append(sum(data[-(length % 4):]) / (length % 4))
 
     return temp
+
+
+"""
+function name: prepareForSpectrogram.
+input: sampleRate - the sampling rate of the input data. data - the audio file from wavfile.read. a numpy array.
+output: a tuple - sampleRate, data. sample rate is the input sample rate divided by 4 (after the down sampling). data is 
+the processed data.
+operation: checks the data to be a mono or a stereo file. if it's a mono file it passes the data through the 
+stereoToMonoConvert function. otherwise continues as usual with the low pass filter and the down sampling.
+"""
+
+
+def prepareForSpectrogram(sampleRate, data):
+    if len(data.shape) == 2:
+        print('preparing stereo file...')
+        data = stereoToMonoConvert(data)
+    else:
+        print('preparing mono file...')
+
+    data = lowPassFilter(data, sampleRate)
+    data = downSample(data)
+    sampleRate /= 4
+    return sampleRate, data

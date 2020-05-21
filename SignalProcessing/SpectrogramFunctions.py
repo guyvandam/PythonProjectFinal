@@ -1,4 +1,9 @@
 from ImportsFile import *
+import scipy
+import scipy.fftpack as fftpk
+import scipy.signal
+from pylab import *
+from GeneralFunctions import *
 
 '''
 function name: FFT.
@@ -42,5 +47,5 @@ def createFilteredSpectrogramPoints(sampleRate, data):
         for f in filteredPoints:
             spectrogramPoints.append((i / 10, round(f[0], 3)))
 
-        spectrogramPoints = sorted(spectrogramPoints, key=lambda x: x[0]) # filter the points by time.
+        spectrogramPoints = sorted(spectrogramPoints, key=lambda x: x[0])  # filter the points by time.
     return spectrogramPoints

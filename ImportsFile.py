@@ -1,6 +1,5 @@
-from DatabaseItems.Song import *
-from DatabaseItems.Recording import *
 import GlobalValues
+from DatabaseItems.DatabaseItemsFunctions import *
 from scipy.io.wavfile import *
 
 from DatabaseItems.TargetZone import createTargetZones
@@ -13,8 +12,6 @@ import scipy.signal
 from scipy.io import wavfile
 
 import GlobalValues
-from DatabaseItems.Song import Song
-from DatabaseItems.TargetZone import createTargetZones
 
 import numpy
 import scipy
@@ -27,3 +24,8 @@ from scipy import signal
 import scipy.io.wavfile as wavefile
 
 from GeneralFunctions import *
+
+from scipy import signal
+import numpy as np
+
+import scipy.io.wavfile as wavefile

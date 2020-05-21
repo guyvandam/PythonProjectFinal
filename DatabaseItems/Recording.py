@@ -1,3 +1,4 @@
+from DatabaseItems.Song import Song
 from ImportsFile import *
 
 decimalPoints = GlobalValues.decimalPoints
@@ -24,26 +25,13 @@ class Recording:
         # key - songId, value - a list of deltas of the anchor time for each songId.
         self.songIdDeltaDict = {}
 
-    # '''
-    # function name: createTimeFrequencyPoints.
-    # input:N/A
-    # output: N/A
-    # operation: initializes the 'timeFrequencyPoints' variable.
-    # '''
-    #
-    # def createTimeFrequencyPoints(self):
-    #     sampleRate, data = scipy.io.wavfile.read(self.path)
-    #     self.timeFrequencyPoints = createFilteredSpectrogram(sampleRate, data)
-
-    # '''
-    #     function name: createTargetZone
-    #     input: N/A
-    #     output: N/A
-    #     operation: initializes the 'targetZones' variable.
-    #     '''
-    #
-    # def createTargetZones(self):
-    #     self.targetZones = targetZonesCreate(self.timeFrequencyPoints)
+    """
+    function name: initializeAll.
+    input: N/A
+    output: N/A
+    operation: initializes the timeFrequencyPoints, targetZones, anchorPointTargetZoneDict, addressAnchorTimeDict 
+    variables. also initializes the songIdDeltaDict to be an empty dictionary with lists as values for future use.
+    """
 
     def initializeAll(self):
 
@@ -52,9 +40,16 @@ class Recording:
 
         self.createConstellationMap()
         self.targetZones = createTargetZones(self.timeFrequencyPoints)
-        self.createAnchorPoints()
+        self.anchorPointTargetZoneDict = createAnchorPoints(self.timeFrequencyPoints, self.targetZones)
         self.createAddresses()
         self.songIdDeltaDict = {address: [] for address in self.addressAnchorTimeDict.keys()}
+
+    """
+    function name: createConstellationMap.
+    input: N/A
+    output: N/A
+    operation: initializes the timeFrequencyPoints variable.
+    """
 
     def createConstellationMap(self):
         sampleRate, data = scipy.io.wavfile.read('C:\PythonProject\Songs\LoseYourself045100R3.wav')
@@ -62,26 +57,16 @@ class Recording:
 
         # f, t, Sxx = createSpectrogram(sampleRate, data)
         # self.timeFrequencyPoints, r = filterSpectrogramByRegions(Sxx, f, t, GlobalValues.regionCoefficientR)
-        self.timeFrequencyPoints = createFilteredSpectrogram(sampleRate, data)
+        self.timeFrequencyPoints = createFilteredSpectrogramPoints(sampleRate, data)
 
-    '''
-    function name: createAnchorPoints
-    input: N/A
-    output:N/A
-    operation: initializes the 'anchorPointTargetZoneDict' variable.
-    '''
-
-    def createAnchorPoints(self):
-        self.anchorPointTargetZoneDict = {self.timeFrequencyPoints[i - 3]: self.targetZones[i] for i in
-                                          range(3, len(self.targetZones))}
-
-    '''
+    """
     function name: createAddresses 
     input: N/A 
     output: N/A 
     operation: initializes the addressAnchorTimeDict, 
-    for every point in a target zone, calculates the address according to the anchor point 
-    '''
+    for every point in a target zone, calculates the address according to the anchor point. rounds the number to 3 
+    decimal points and saves the result as string for the search in the database.    
+    """
 
     def createAddresses(self):
         for anchorPoint, targetZone in self.anchorPointTargetZoneDict.items():
@@ -98,26 +83,6 @@ class Recording:
                 self.addressAnchorTimeDict[tempAddress].append(timeOfAnchor)
             else:
                 self.addressAnchorTimeDict[tempAddress] = [timeOfAnchor]
-
-    # '''
-    # function name: addressCreate
-    # input: N/A
-    # output: list of (anchor point time,address) couples
-    # operation: for each target zone, updates the "anchor_targetZoneDict" with a new key - the anchor point and its value
-    # the target zone.
-    # '''
-    #
-    # def addressesCreate(self):
-    #     for i in range(0, len(self.targetZones)):
-    #         if i > 2:
-    #             self.anchorPointTargetZoneDict[self.timeFrequencyPoints[i - 3]] = self.targetZones[i]
-    #
-    #     for anchorPoint in self.anchorPointTargetZoneDict:
-    #         for p in self.anchorPointTargetZoneDict[anchorPoint]:
-    #             self.addressCouplesList.append(
-    #                 (anchorPoint[0], (anchorPoint[1], p[1], p[0] - anchorPoint[0])))
-    #
-    #     return self.addressCouplesList
 
     '''
     function name: songIdTableUpdate
@@ -156,13 +121,6 @@ class Recording:
         # self.songIdNumOfKeysTable = dict(
         #     filter(lambda element: element[1] >= 300 * coefficient, self.songIdNumOfKeysTable.items()))
 
-    def plotConstellationMap(self):
-        x, y = createLists(self.timeFrequencyPoints)
-        plt.plot(x, y, 'kx')
-        plt.ylim(0, 5000)
-        plt.grid()
-        plt.show()
-
 
 if __name__ == '__main__':
     r = Recording()
@@ -173,3 +131,17 @@ if __name__ == '__main__':
 
     print(len(r.addressAnchorTimeDict))
     print(len(s.addressCoupleDict))
+
+    #
+    #
+    # def addressesCreate(self):
+    #     for i in range(0, len(self.targetZones)):
+    #         if i > 2:
+    #             self.anchorPointTargetZoneDict[self.timeFrequencyPoints[i - 3]] = self.targetZones[i]
+    #
+    #     for anchorPoint in self.anchorPointTargetZoneDict:
+    #         for p in self.anchorPointTargetZoneDict[anchorPoint]:
+    #             self.addressCouplesList.append(
+    #                 (anchorPoint[0], (anchorPoint[1], p[1], p[0] - anchorPoint[0])))
+    #
+    #     return self.addressCouplesList
