@@ -62,19 +62,20 @@ care of the reminders.
 
 
 def hammingWindow(data):
-    result = []
-
     windowSize = 1024
     window = np.hamming(windowSize)
+    length = len(data)
+    subLists = [data[i: i + 1024] for i in range(0, length - length % 1024, 1024)]
+    return list(map(lambda subList: [subList[i] * window[i] for i in range(len(subList))], subLists))
 
-    j = 0
-    while j + windowSize < len(data):
-        result.append([data[j + i] * window[i] for i in range(0, windowSize)])
-        j += windowSize
-
-    windowSize = len(data) - j
-
-    result.append([data[j + i] * window[i] for i in range(0, windowSize)])
+    # j = 0
+    # while j + windowSize < len(data):
+    #     result.append([data[j + i] * window[i] for i in range(0, windowSize)])
+    #     j += windowSize
+    #
+    # windowSize = len(data) - j
+    #
+    # result.append([data[j + i] * window[i] for i in range(0, windowSize)])
 
     return result
 

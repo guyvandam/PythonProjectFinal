@@ -1,9 +1,17 @@
+import GlobalValues
 from ImportsFile import *
+import scipy.fftpack as fftpk
+from pylab import *
 
 # frequencies bands ranges.
 RANGE = [102.315, 210.015, 425.415, 856.215, 1717.815, 5508.855]
 # the bands values.
 bandsValue = [9, 19, 39, 79, 159, 511]
+windowSize = 1024
+sampleRate = 11025
+
+frequencies = fftpk.fftfreq(windowSize, d=(1.0 / sampleRate))
+frequencies = frequencies[0:len(frequencies) // 2]
 
 """
 function name: updateRange.
@@ -47,7 +55,8 @@ operation: goes with a loop until the point is no longer in that band and stops.
 def pointIntoBand(bands, point):
     i = 0
     length = len(bands)
-    while RANGE[i] <= point[0] and i < length - 1:
+    while RANGE[i] <= frequencies[point[0]] and i < length - 1:
+        # while RANGE[i] <= point[0] and i < length - 1:
         i += 1
     bands[i].append(point)
 

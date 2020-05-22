@@ -42,7 +42,8 @@ def createFilteredSpectrogramPoints(sampleRate, data):
 
     for i in range(len(result)):
         frequencies2, amp = FFT(result[i], sampleRate)
-        frequencyAmplitudePoints = createPoints(frequencies2, amp)
+        # frequencyAmplitudePoints = createPoints(frequencies2, amp)
+        frequencyAmplitudePoints = createPoints([*range(0, 512)], amp)
         filteredPoints = filterFFT(frequencyAmplitudePoints)
         for f in filteredPoints:
             spectrogramPoints.append((i / 10, round(f[0], 3)))

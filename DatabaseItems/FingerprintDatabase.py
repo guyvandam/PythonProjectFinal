@@ -1,5 +1,5 @@
 from ImportsFile import *
-
+from DatabaseItems.Recording import Recording
 
 def stringToTuple(s):
     try:
@@ -47,20 +47,20 @@ class FingerprintDatabase:
     of one object, so it can be expanded in the future.
     '''
 
-    def load(self, path, songId):
-
-        self.pullFingerprintDatabase()
-        self.pullSongIdAddressCoupleDict()
-        temp = Song(path, songId) # ==========================================================================================
-        temp.initializeAll()
-        print(temp.songID)
-
-        self.databaseUpdateDECIMAL(temp)
-
-        self.songIdAddressCoupleDict[songId] = temp.addressCoupleDict
-
-        self.saveFingerprintDatabase()
-        self.saveSongIdAddressCoupleDict()
+    # def load(self, path, songId):
+    #
+    #     self.pullFingerprintDatabase()
+    #     self.pullSongIdAddressCoupleDict()
+    #     temp = Song(path, songId) # ==========================================================================================
+    #     temp.initializeAll()
+    #     print(temp.songID)
+    #
+    #     self.databaseUpdateDECIMAL(temp)
+    #
+    #     self.songIdAddressCoupleDict[songId] = temp.addressCoupleDict
+    #
+    #     self.saveFingerprintDatabase()
+    #     self.saveSongIdAddressCoupleDict()
 
     '''
     function name: saveDatabase.
@@ -203,8 +203,8 @@ if __name__ == '__main__':
     # fingerprintDB.showCollection()
     fingerprintDB.pullFingerprintDatabase()
     fingerprintDB.showCollection()
-    r = Recording()
-    r.initializeAll()
+    # r = Recording()
+    # r.initializeAll()
     # r.plotConstellationMap()
 
-    fingerprintDB.searchInDatabase(r)
+    # fingerprintDB.searchInDatabase(r)

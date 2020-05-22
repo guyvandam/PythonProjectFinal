@@ -52,12 +52,12 @@ class Recording:
     """
 
     def createConstellationMap(self):
-        sampleRate, data = scipy.io.wavfile.read('C:\PythonProject\Songs\LoseYourself045100R3.wav')
-        # sampleRate, data = scipy.io.wavfile.read('C:\PythonProject\Songs\AdventureOfALifetime100115R.wav')
+        # sampleRate, data = scipy.io.wavfile.read('C:\PythonProject\Songs\LoseYourself045100R3.wav')
+        sampleRate, data = scipy.io.wavfile.read('C:\PythonProject\Songs\AdventureOfALifetime100115R.wav')
 
         # f, t, Sxx = createSpectrogram(sampleRate, data)
         # self.timeFrequencyPoints, r = filterSpectrogramByRegions(Sxx, f, t, GlobalValues.regionCoefficientR)
-        self.timeFrequencyPoints = createFilteredSpectrogramPoints(sampleRate, data)
+        self.timeFrequencyPoints = createFilteredSpectrogramPoints(sampleRate, list(data))
 
     """
     function name: createAddresses 
@@ -128,9 +128,10 @@ if __name__ == '__main__':
 
     s = Song('C:\PythonProject\Songs\LoseYourself045100.wav', 'test')
     s.initializeAll()
-
-    print(len(r.addressAnchorTimeDict))
-    print(len(s.addressCoupleDict))
+    print(len(r.timeFrequencyPoints))
+    print(r.timeFrequencyPoints)
+    # print(len(r.addressAnchorTimeDict))
+    # print(len(s.addressCoupleDict))
 
     #
     #
