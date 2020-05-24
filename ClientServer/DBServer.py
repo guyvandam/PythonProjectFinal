@@ -61,59 +61,48 @@ class serverdb():
     def checkMatch(self, data):
         ans = "max"
         if self.dbSocket == "":
-            print("no data base")
-            return "error"
+            print("'dbsocket' is an empty string.")
+            return "db socket was empty"
         else:
+            print("===== IN THE 'ELSE' OF 'CHECKMATCH' =====")
             self.dbSocket.send(ans.encode('latin-1'))
             data = self.dbSocket.recv(1024)
             data = data.decode('latin-1')
 
             return data
 
-    def addSound(self, name, data):
-        s_rate, signal = wavefile.read('C:\PythonProject2\Songs\ClientRecording.wav')
+    def sreachInDatabase(self):
+        return "'searchInDatabase' is still empty"
 
-        signal = signal.ravel()
+    def updateTheWavFile(self, current_socket):
+        print("ENTERED updateTheWavFile")
 
-        FFT = abs(scipy.fft(signal))
+        with open(r'C:\PythonProject2\Songs\ClientRecording.wav', 'wb') as f:
+            print("opened the ClientRecording file...")
 
-        freqs = fftpk.fftfreq(len(FFT), (1.0 / s_rate))
+            while True:
 
-        maxfreq = freqs[range(len(FFT) // 2)][np.where(FFT[range(len(FFT) // 2)] == max(FFT[range(len(FFT) // 2)]))]
-        print(freqs[range(len(FFT) // 2)][np.where(FFT[range(len(FFT) // 2)] == max(FFT[range(len(FFT) // 2)]))])
-        ans = "new" + data[3:19] + name + str(int(maxfreq[0]))
-        if (self.dbSocket == ""):
-            print("no data base")
-            return "error"
-        else:
-            self.dbSocket.send(ans.encode('latin-1'))
-            data = self.dbSocket.recv(1024)
-            data = data.decode('latin-1')
-            return data
+                m = current_socket.recv(1024)  # try to receive 100 bytes
+                f.write(m)
+                if not m:
+                    print("finished m was empty")
+                    break
+                if "finish" in m.decode('latin-1'):
+                    print("'finish' was in the data../finished in m")
+                    break
 
-    # def signup(self, info):
-    #     if (self.dbSocket == ""):
-    #         print("no data base")
-    #         return "error"
-    #     else:
-    #         self.dbSocket.send(info.encode('latin-1'))
-    #         data = self.dbSocket.recv(1024)
-    #         data = data.decode('latin-1')
-    #         print("signup data 122 " + data)
-    #         return data
-    #
-    # def login(self, info):
-    #     if (self.dbSocket == ""):
-    #         print("no data base")
-    #         return "error"
-    #     else:
-    #         self.dbSocket.send(info.encode('latin-1'))
-    #         data = self.dbSocket.recv(1024)
-    #         data = data.decode('latin-1')
-    #         return data
+            print("size of the new file ",
+                  str(os.path.getsize(r'C:\PythonProject2\Songs\ClientRecording.wav')))
+
+        print("finished adding the file, now searching the database")
+        answer = self.searchInDatabase()
+        print("finished searching the database")
+        current_socket.send(answer.encode('latin-1'))
+        print("sent the message")
+        print("EXITING updateTheWavFile")
 
     def actualWork(self):
-        print("here")
+        print("server is up...")
         while True:
             client_data_exist = False
 
@@ -129,96 +118,44 @@ class serverdb():
                     self.open_client_sockets.append(new_socket)
 
                 else:
-                    # s_rate, signal = wavio.read(r'C:\Users\morgr\Desktop\\morSaved.wav')
                     client_data_exist = True
                     data = current_socket.recv(1024)
                     data = data.decode('latin-1')
-                    print(str(data) + " 76")
-                    print("160" + str(data[:6]))
+                    print("data: ", str(data))
                     # neccery but removes the client
                     if data == "":
                         self.open_client_sockets.remove(current_socket)
                         print("Connection with client closed.")
 
-                    if str(data[:4]) == "file":
-                        print("here 82")
-
-                        with open(r'C:\PythonProject2\Songs\ClientRecording.wav', 'wb') as f:
-                            print("opened")
-
-                            while True:
-
-                                m = current_socket.recv(1024)  # try to receive 100 bytes
-                                f.write(m)
-                                if not m:
-                                    print("finished because no m")
-                                    break
-                                if "finish" in m.decode('latin-1'):
-                                    print("finished in m")
-                                    break
-
-                            print(str(os.path.getsize(r'C:\PythonProject2\Songs\ClientRecording.wav')))
-
-                            print("breaked")
-
-                        print("finished adding file")
-
-                        # if (os.path.exists(r'C:\Users\morgr\Desktop\morSaved.3gp')):
-                        #     print("exists")
-                        # else:
-                        #     print("doesnt exist")
-                        foundSound = self.checkMatch(data) + "\n"
-                        print("ans 51: ")
-                        current_socket.send(foundSound.encode('latin-1'))
-                        print("sent msg 157")
-
-                    # elif str(data[:3]) == "new":
-                    #     SoundName = data[19:]
-                    #     print("here 156 " + SoundName)
-                    #
-                    #     with open(r'C:\PythonProject2\Songs\ClientRecording.wav', 'wb') as f:
-                    #         print("opened")
-                    #
-                    #         while True:
-                    #
-                    #             m = current_socket.recv(1024)  # try to receive 100 bytes
-                    #             f.write(m)
-                    #             if not m:
-                    #                 print("finished becouse no m")
-                    #                 break
-                    #             if "finish" in m.decode('latin-1'):
-                    #                 print("finished in m")
-                    #                 break
-                    #
-                    #         print(str(os.path.getsize(r'C:\PythonProject2\Songs\ClientRecording.wav')))
-                    #
-                    #         print("breaked")
-                    #
-                    #     print("finished adding file")
-                    #
-                    #     success = self.addSound(str(SoundName), data) + "\n"
-                    #     print("ans 51: " + success)
-                    #     current_socket.send(success.encode('latin-1'))
-                    #     print("sent msg 157")
-                    #
-                    # elif (str(data[:5]) == "LogIn"):
-                    #     print("in need to log in")
-                    #     isSuccess = self.login(data) + "\n"
-                    #     current_socket.send(isSuccess.encode('latin-1'))
-                    #     # check if client exist
-                    #
-                    # elif (str(data[:6]) == "SignUp"):
-                    #     print("in need to sign up")
-                    #     print("self.signup(data)")
-                    #     isSuccess = self.signup(data) + "\n"
-                    #     print(isSuccess)
-                    #     current_socket.send(isSuccess.encode('latin-1'))
-                    #     print("succeed in send line 238")
-                    #     # sign up new client
+                    elif str(data[:4]) == "file":
+                        self.updateTheWavFile(current_socket)
+                        # print("data started with 'file'")
+                        #
+                        # with open(r'C:\PythonProject2\Songs\ClientRecording.wav', 'wb') as f:
+                        #     print("opened the ClientRecording file...")
+                        #
+                        #     while True:
+                        #
+                        #         m = current_socket.recv(1024)  # try to receive 100 bytes
+                        #         f.write(m)
+                        #         if not m:
+                        #             print("finished m was empty")
+                        #             break
+                        #         if "finish" in m.decode('latin-1'):
+                        #             print("'finish' was in the data../finished in m")
+                        #             break
+                        #
+                        #     print("size of the new file ",
+                        #           str(os.path.getsize(r'C:\PythonProject2\Songs\ClientRecording.wav')))
+                        #
+                        # print("finished adding the file")
+                        # answer = self.searchInDatabase()
+                        # print("finished with 'checkMatch")
+                        # current_socket.send(answer.encode('latin-1'))
+                        # print("sent the message")
                     else:
-
-                        print(data)
-                        print("i was data")
+                        print("=====NEEDED DIGEST=====")
+                        print("data: ", data)
                         self.digest((current_socket, data))
 
             if client_data_exist:
