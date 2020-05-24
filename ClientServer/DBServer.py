@@ -59,21 +59,8 @@ class serverdb():
             print(data)
 
     def checkMatch(self, data):
-        userName = data[4:12]
-        pwd = data[12:20]
-
-        s_rate, signal = wavefile.read(r'C:\PythonProject2\Songs\ClientRecording.wav')
-
-        signal = signal.ravel()
-
-        FFT = abs(scipy.fft(signal))
-
-        freqs = fftpk.fftfreq(len(FFT), (1.0 / s_rate))
-
-        maxfreq = freqs[range(len(FFT) // 2)][np.where(FFT[range(len(FFT) // 2)] == max(FFT[range(len(FFT) // 2)]))]
-        print(freqs[range(len(FFT) // 2)][np.where(FFT[range(len(FFT) // 2)] == max(FFT[range(len(FFT) // 2)]))])
-        ans = "max" + userName + pwd + str(int(maxfreq[0]))
-        if (self.dbSocket == ""):
+        ans = "max"
+        if self.dbSocket == "":
             print("no data base")
             return "error"
         else:
@@ -181,7 +168,7 @@ class serverdb():
                         # else:
                         #     print("doesnt exist")
                         foundSound = self.checkMatch(data) + "\n"
-                        print("ans 51: " + foundSound)
+                        print("ans 51: ")
                         current_socket.send(foundSound.encode('latin-1'))
                         print("sent msg 157")
 
@@ -234,7 +221,7 @@ class serverdb():
                         print("i was data")
                         self.digest((current_socket, data))
 
-            if client_data_exist == True:
+            if client_data_exist:
                 dummyrlist, wlist, xlist = select.select([], rlist, [], 0.1)
                 self.send_waiting_messages(wlist)
 
