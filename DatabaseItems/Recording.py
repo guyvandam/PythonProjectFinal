@@ -6,7 +6,7 @@ coefficient = GlobalValues.songIdFilterCoefficient
 
 
 class Recording:
-    def __init__(self):
+    def __init__(self, path):
         self.timeFrequencyPoints = []
 
         self.targetZones = []
@@ -25,6 +25,8 @@ class Recording:
         # key - songId, value - a list of deltas of the anchor time for each songId.
         self.songIdDeltaDict = {}
 
+        self.dataPath = path
+
     """
     function name: initializeAll.
     input: N/A
@@ -42,7 +44,7 @@ class Recording:
         self.targetZones = createTargetZones(self.timeFrequencyPoints)
         self.anchorPointTargetZoneDict = createAnchorPoints(self.timeFrequencyPoints, self.targetZones)
         self.createAddresses()
-        self.songIdDeltaDict = {address: [] for address in self.addressAnchorTimeDict.keys()}
+        # self.songIdDeltaDict = {address: [] for address in self.addressAnchorTimeDict.keys()}
 
     """
     function name: createConstellationMap.
@@ -52,12 +54,12 @@ class Recording:
     """
 
     def createConstellationMap(self):
-        # sampleRate, data = scipy.io.wavfile.read('C:\PythonProject\Songs\LoseYourself045100R3.wav')
         sampleRate, data = scipy.io.wavfile.read('C:\PythonProject\Songs\AdventureOfALifetime100115R.wav')
-
-        # f, t, Sxx = createSpectrogram(sampleRate, data)
-        # self.timeFrequencyPoints, r = filterSpectrogramByRegions(Sxx, f, t, GlobalValues.regionCoefficientR)
-        self.timeFrequencyPoints = createFilteredSpectrogramPoints(sampleRate, list(data))
+        try:
+            # sampleRate, data = scipy.io.wavfile.read(self.dataPath)
+            self.timeFrequencyPoints = createFilteredSpectrogramPoints(sampleRate, list(data))
+        except:
+            return "error in reading the wav file..."
 
     """
     function name: createAddresses 
@@ -72,12 +74,13 @@ class Recording:
         for anchorPoint, targetZone in self.anchorPointTargetZoneDict.items():
             timeOfAnchor = round(anchorPoint[0], decimalPoints)
             for p in targetZone:
-                # tempAddress = (round(anchorPoint[1], decimalPoints) * 1000, round(p[1], decimalPoints) * 1000,
-                #                round(p[0] - anchorPoint[0], decimalPoints) * 1000)
+                # tempAddress = str(int(round(anchorPoint[1], decimalPoints) * 1000)) + ',' + str(
+                #     int(round(p[1], decimalPoints) * 1000)) + ',' + str(
+                #     int(round(p[0] - anchorPoint[0], decimalPoints) * 1000))
 
-                tempAddress = str(int(round(anchorPoint[1], decimalPoints) * 1000)) + ',' + str(
-                    int(round(p[1], decimalPoints) * 1000)) + ',' + str(
-                    int(round(p[0] - anchorPoint[0], decimalPoints) * 1000))
+                delta = p[0] - anchorPoint[0]
+                # tempAddress = str(anchorPoint[1]) + ',' + str(p[1]) + ',' + str(int(round(delta, decimalPoints) * 10))
+                tempAddress = (anchorPoint[1], p[1], int(round(delta, decimalPoints) * 10))
 
             if tempAddress in self.addressAnchorTimeDict:
                 self.addressAnchorTimeDict[tempAddress].append(timeOfAnchor)
@@ -110,7 +113,6 @@ class Recording:
     '''
 
     def songIdTableFilter(self):
-        print(self.songIdTable)
         # self.songIdTable = dict(filter(lambda element: element[1] > 4, self.songIdTable.items()))
         for couple in self.songIdTable.keys():
             if couple[1] in self.songIdNumOfKeysTable.keys():
@@ -118,31 +120,5 @@ class Recording:
             else:
                 self.songIdNumOfKeysTable[couple[1]] = 1
 
-        # self.songIdNumOfKeysTable = dict(
-        #     filter(lambda element: element[1] >= 300 * coefficient, self.songIdNumOfKeysTable.items()))
-
-
-if __name__ == '__main__':
-    r = Recording()
-    r.initializeAll()
-
-    s = Song('C:\PythonProject\Songs\LoseYourself045100.wav', 'test')
-    s.initializeAll()
-    print(len(r.timeFrequencyPoints))
-    print(r.timeFrequencyPoints)
-    # print(len(r.addressAnchorTimeDict))
-    # print(len(s.addressCoupleDict))
-
-    #
-    #
-    # def addressesCreate(self):
-    #     for i in range(0, len(self.targetZones)):
-    #         if i > 2:
-    #             self.anchorPointTargetZoneDict[self.timeFrequencyPoints[i - 3]] = self.targetZones[i]
-    #
-    #     for anchorPoint in self.anchorPointTargetZoneDict:
-    #         for p in self.anchorPointTargetZoneDict[anchorPoint]:
-    #             self.addressCouplesList.append(
-    #                 (anchorPoint[0], (anchorPoint[1], p[1], p[0] - anchorPoint[0])))
-    #
-    #     return self.addressCouplesList
+        self.songIdNumOfKeysTable = dict(
+            filter(lambda element: element[1] >= 100 * coefficient, self.songIdNumOfKeysTable.items()))

@@ -1,8 +1,6 @@
 from DatabaseItems import Song, Recording
-from GeneralFunctions import *
-import matplotlib.pyplot as plt
 
-ss = Song.Song('C:\PythonProject\Songs\AdventureOfALifetime045200S.wav', 'test')
+ss = Song.Song(r'C:\PythonProject\Songs\AdventureOfALifetime045200S.wav', 'test')
 ss.initializeAll()
 
 sm = Recording.Recording()

@@ -65,44 +65,15 @@ class Song:
         for anchorPoint, targetZone in self.anchorPointTargetZoneDict.items():
             couple = (round(anchorPoint[0], decimalPoints), self.songID)
             for p in targetZone:
-                tempAddress = str(int(round(anchorPoint[1], decimalPoints) * 1000)) + ',' + str(
-                    int(round(p[1], decimalPoints) * 1000)) + ',' + str(
-                    int(round(p[0] - anchorPoint[0], decimalPoints) * 1000))
+                # tempAddress = str(int(round(anchorPoint[1], decimalPoints) * 1000)) + ',' + str(
+                #     int(round(p[1], decimalPoints) * 1000)) + ',' + str(
+                #     int(round(p[0] - anchorPoint[0], decimalPoints) * 1000))
 
-            if tempAddress in self.addressCoupleDict:
-                self.addressCoupleDict[tempAddress].append(couple)
-            else:
-                self.addressCoupleDict[tempAddress] = [couple]
+                delta = p[0] - anchorPoint[0]
+                tempAddress = str(int(anchorPoint[1])) + ',' + str(int(p[1])) + ',' + str(
+                    int(round(delta, decimalPoints) * 10))
 
-
-if __name__ == '__main__':
-    s = Song('C:\PythonProject\Songs\LoseYourself045100S.wav', 'test')
-    s.initializeAll()
-    print(s.addressCoupleDict)
-
-    # '''
-    #     function name: createTargetZone
-    #     input: N/A
-    #     output: N/A
-    #     operation: initializes the 'targetZones' variable.
-    #     '''
-    #
-    # def createTargetZones(self):
-    #     self.targetZones = createTargetZones(self.timeFrequencyPoints)
-
-    # '''
-    # input: N/A
-    # output: list of (couple,address) couples
-    # operation: for each target zone, updates the "anchor_targetZoneDict" with a new key - the anchor point and its value
-    # the target zone.
-    # '''
-    #
-    # def addressesCreate(self):
-    #     self.createAnchorPoints()
-    #
-    #     for anchorPoint, targetZone in self.anchorPointTargetZoneDict.items():
-    #         for p in targetZone:
-    #             self.addressCouplesList.append(
-    #                 ((anchorPoint[0], self.songID), (anchorPoint[1], p[1], p[0] - anchorPoint[0])))
-    #
-    #     return self.addressCouplesList
+                if tempAddress in self.addressCoupleDict:
+                    self.addressCoupleDict[tempAddress].append(couple)
+                else:
+                    self.addressCoupleDict[tempAddress] = [couple]

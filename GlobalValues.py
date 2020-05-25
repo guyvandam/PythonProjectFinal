@@ -1,7 +1,7 @@
 global decimalPoints, songIdFilterCoefficient, meanCoefficient, gs, targetSize
 
 decimalPoints = 3
-songIdFilterCoefficient = 3
+songIdFilterCoefficient = 1
 meanCoefficient = 1
 
 # regionCoefficientR = 1.1
