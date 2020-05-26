@@ -15,8 +15,8 @@ frequencies = frequencies[0:len(frequencies) // 2]
 
 """
 function name: updateRange.
-:return N/A
-:arg N/A
+input: N/A
+output: N/A
 operation: update the frequency RANGE variable. 
 """
 
@@ -56,7 +56,6 @@ def pointIntoBand(bands, point):
     i = 0
     length = len(bands)
     while RANGE[i] <= frequencies[point[0]] and i < length - 1:
-        # while RANGE[i] <= point[0] and i < length - 1:
         i += 1
     bands[i].append(point)
 

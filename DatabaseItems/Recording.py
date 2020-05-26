@@ -52,7 +52,7 @@ class Recording:
         # sampleRate, data = scipy.io.wavfile.read('C:\PythonProject\Songs\AdventureOfALifetime100115R.wav')
         try:
             sampleRate, data = scipy.io.wavfile.read(self.dataPath)
-            self.timeFrequencyPoints = createFilteredSpectrogramPoints(sampleRate, list(data))
+            self.timeFrequencyPoints = createFilteredSpectrogramPoints(list(data))
         except:
             return "error in reading the wav file..."
 

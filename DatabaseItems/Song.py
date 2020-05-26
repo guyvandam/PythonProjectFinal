@@ -48,9 +48,7 @@ class Song:
     def createConstellationMap(self):
         sampleRate, data = wavefile.read(self.path)
         sampleRate, data = prepareForSpectrogram(sampleRate, data)
-        # f, t, Sxx = createSpectrogram(sampleRate, data)
-        # self.timeFrequencyPoints, r = filterSpectrogramByRegions(Sxx, f, t, GlobalValues.regionCoefficientD)
-        self.timeFrequencyPoints = createFilteredSpectrogramPoints(sampleRate, data)
+        self.timeFrequencyPoints = createFilteredSpectrogramPoints(data)
 
     """
         function name: createAddresses 

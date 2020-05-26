@@ -95,9 +95,7 @@ class FingerprintDatabase:
     def saveFingerprintDatabase(self):
         self.collection.delete_one({"_id": 1})
         try:
-            # self.database["_id"] = 1
             self.StorageDatabase["_id"] = 1
-            # self.collection.insert_one(self.database)
             self.collection.insert_one(self.StorageDatabase)
         except pymongo.errors.DuplicateKeyError:
             print('===== ERROR === KEY EXISTS === ERROR =====')
@@ -201,7 +199,14 @@ class FingerprintDatabase:
         recording.songIdTableFilter()
         return self.filterResults(list(recording.songIdNumOfKeysTable.keys()), recording)
 
-    # time coherency step.
+    """
+    function name: filterResults.
+    input: songIdList - self explnetory, recording - a Recording object, the recording in the search.
+    output: the information for the song we predict the recording matches to. (if we can make such prediction).
+    operation: now for each song id (the key) we'll find the delta that appears most in that list. we'll save the time 
+    of appearances, and the song with the most appearances we'll be our prediction.  
+    """
+
     def filterResults(self, songIdList, recording):
         if len(songIdList) == 0:
             return "didn't find anything :("
