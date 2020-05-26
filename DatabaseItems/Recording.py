@@ -36,15 +36,10 @@ class Recording:
     """
 
     def initializeAll(self):
-
-        # self.timeFrequencyPoints = [(1, 10), (1, 20), (1, 30), (2, 10), (3, 10), (3, 20), (3, 30), (4, 20), (4, 30),
-        #                             (5, 20), (6, 10)]
-
         self.createConstellationMap()
         self.targetZones = createTargetZones(self.timeFrequencyPoints)
         self.anchorPointTargetZoneDict = createAnchorPoints(self.timeFrequencyPoints, self.targetZones)
         self.createAddresses()
-        # self.songIdDeltaDict = {address: [] for address in self.addressAnchorTimeDict.keys()}
 
     """
     function name: createConstellationMap.
@@ -54,9 +49,9 @@ class Recording:
     """
 
     def createConstellationMap(self):
-        sampleRate, data = scipy.io.wavfile.read('C:\PythonProject\Songs\AdventureOfALifetime100115R.wav')
+        # sampleRate, data = scipy.io.wavfile.read('C:\PythonProject\Songs\AdventureOfALifetime100115R.wav')
         try:
-            # sampleRate, data = scipy.io.wavfile.read(self.dataPath)
+            sampleRate, data = scipy.io.wavfile.read(self.dataPath)
             self.timeFrequencyPoints = createFilteredSpectrogramPoints(sampleRate, list(data))
         except:
             return "error in reading the wav file..."
@@ -112,13 +107,27 @@ class Recording:
     number of target zones in the recording. 
     '''
 
-    def songIdTableFilter(self):
-        # self.songIdTable = dict(filter(lambda element: element[1] > 4, self.songIdTable.items()))
+    def ssongIdTableFilter(self):
+        print("songIdTable:", self.songIdTable)
+
+        # temp = dict(filter(lambda element: element[1] > 2, self.songIdTable.items()))
+        # print("temp", temp)
+        # if temp is not {}:
+        #     print("temp isn't empty")
+        #     self.songIdTable = temp
+        #
+        # print("songIdTable:", self.songIdTable)
         for couple in self.songIdTable.keys():
             if couple[1] in self.songIdNumOfKeysTable.keys():
                 self.songIdNumOfKeysTable[couple[1]] += 1
             else:
                 self.songIdNumOfKeysTable[couple[1]] = 1
 
+        if self.songIdNumOfKeysTable is not {}:
+            print(self.songIdNumOfKeysTable)
+            maxNumOfKeys = max(self.songIdNumOfKeysTable.items(), key=lambda x: x[1])[0]
+            print(maxNumOfKeys)
+
+        print("songIdNumOfKeysTable: ", self.songIdNumOfKeysTable)
         self.songIdNumOfKeysTable = dict(
             filter(lambda element: element[1] >= 100 * coefficient, self.songIdNumOfKeysTable.items()))

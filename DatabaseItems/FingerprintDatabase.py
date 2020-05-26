@@ -203,7 +203,6 @@ class FingerprintDatabase:
 
     # time coherency step.
     def filterResults(self, songIdList, recording):
-        print(recording.songIdNumOfKeysTable)
         if len(songIdList) == 0:
             return "didn't find anything :("
         elif len(songIdList) == 1:
@@ -231,9 +230,10 @@ class FingerprintDatabase:
         # finds the delta that appear the most in the list, set the number of appearance to be the new value of the dict
         temp = {key: max(listOfDeltas, key=listOfDeltas.count) for key, listOfDeltas in
                 recording.songIdDeltaDict.items()}
+
         recording.songIdDeltaDict = {key: listOfDeltas.count(temp[key]) for key, listOfDeltas in
                                      recording.songIdDeltaDict.items()}
-
+        print("songIdDeltaDict: ", recording.songIdDeltaDict)
         # prints the songId of the delta the have the max appearances in the delta list.
         return self.songIdSongInfoDict[max(recording.songIdDeltaDict.items(), key=lambda x: x[1])[0]]
 
@@ -258,37 +258,36 @@ class FingerprintDatabase:
         self.collection.insert_one({"_id": 1})
         self.collection.insert_one({"_id": 2})
 
-
-if __name__ == '__main__':
-    # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-
-    # database = myclient["mydatabase"]
-    # collection = database["Database collection"]
-
-    pathSongIdDict = {r'C:\PythonProject2\DatabaseSongs\BrunoMarsTreasure.wav': "1",
-                      r'C:\PythonProject2\DatabaseSongs\ColdplayAdventureOfALifetime.wav': "2",
-                      r'C:\PythonProject2\DatabaseSongs\ColdplayHymnForTheWeekend.wav': "3",
-                      r'C:\PythonProject2\DatabaseSongs\Darlin.wav': "4",
-                      r'C:\PythonProject2\DatabaseSongs\Maroon5Animals.wav': "5",
-                      r'C:\PythonProject2\DatabaseSongs\WizKhalifaSeeYouAgain.wav': "6"}
-    fingerprintDatabase = FingerprintDatabase()
-    # fingerprintDatabase.createNewDatabase()
-    fingerprintDatabase.showCollection()
-    # fingerprintDatabase.loadMany(pathSongIdDict)
-
-# songIdSongInfoDict = {'1': 'Treasure by Bruno Mars',
-#                       '2': 'Adventure of a lifetime by Coldplay',
-#                       '3': 'Hymn for the weekend by Coldplay',
-#                       '4': "darlin' by the Beach boys",
-#                       '5': 'Animals by Maroon 5',
-#                       '6': 'see you again by Wiz Khalifa'}
-
-# fingerprintDB = FingerprintDatabase()
-# fingerprintDatabase.load(r'C:\PythonProject2\DatabaseSongs\BrunoMarsTreasure.wav', '1')
-# fingerprintDatabase.load(r'C:\PythonProject2\DatabaseSongs\ColdplayAdventureOfALifetime.wav', '2')
-# fingerprintDB.load(r'C:\PythonProject2\DatabaseSongs\ColdplayHymnForTheWeekend.wav','3')
-# fingerprintDB.showCollection()
-
-r = Recording("blah")
-r.initializeAll()
-fingerprintDatabase.searchInDatabase(r)
+# if __name__ == '__main__':
+#     # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+#
+#     # database = myclient["mydatabase"]
+#     # collection = database["Database collection"]
+#
+#     pathSongIdDict = {r'C:\PythonProject2\DatabaseSongs\BrunoMarsTreasure.wav': "1",
+#                       r'C:\PythonProject2\DatabaseSongs\ColdplayAdventureOfALifetime.wav': "2",
+#                       r'C:\PythonProject2\DatabaseSongs\ColdplayHymnForTheWeekend.wav': "3",
+#                       r'C:\PythonProject2\DatabaseSongs\Darlin.wav': "4",
+#                       r'C:\PythonProject2\DatabaseSongs\Maroon5Animals.wav': "5",
+#                       r'C:\PythonProject2\DatabaseSongs\WizKhalifaSeeYouAgain.wav': "6"}
+#     fingerprintDatabase = FingerprintDatabase()
+#     # fingerprintDatabase.createNewDatabase()
+#     fingerprintDatabase.showCollection()
+#     # fingerprintDatabase.loadMany(pathSongIdDict)
+#
+# # songIdSongInfoDict = {'1': 'Treasure by Bruno Mars',
+# #                       '2': 'Adventure of a lifetime by Coldplay',
+# #                       '3': 'Hymn for the weekend by Coldplay',
+# #                       '4': "darlin' by the Beach boys",
+# #                       '5': 'Animals by Maroon 5',
+# #                       '6': 'see you again by Wiz Khalifa'}
+#
+# # fingerprintDB = FingerprintDatabase()
+# # fingerprintDatabase.load(r'C:\PythonProject2\DatabaseSongs\BrunoMarsTreasure.wav', '1')
+# # fingerprintDatabase.load(r'C:\PythonProject2\DatabaseSongs\ColdplayAdventureOfALifetime.wav', '2')
+# # fingerprintDB.load(r'C:\PythonProject2\DatabaseSongs\ColdplayHymnForTheWeekend.wav','3')
+# # fingerprintDB.showCollection()
+#
+#     r = Recording("blah")
+#     r.initializeAll()
+#     fingerprintDatabase.searchInDatabase(r)

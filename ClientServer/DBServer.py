@@ -76,7 +76,7 @@ class DatabaseServer:
         # print("fileRemoved")
 
     def run(self):
-        print("here")
+        print("server is up")
         while True:
             client_data_exist = False
 

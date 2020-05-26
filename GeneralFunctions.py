@@ -4,6 +4,7 @@ input: x - a list, y - a list. 2 list of the same object and size.
 output: a list of tuples.
 operation: N/A
 """
+import matplotlib.pyplot as plt
 
 
 def createPoints(x, y):
@@ -20,3 +21,4 @@ operation: N/A.
 
 def createLists(points):
     return [p[0] for p in points], [p[1] for p in points]
+
