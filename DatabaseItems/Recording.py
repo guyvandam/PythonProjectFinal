@@ -1,4 +1,3 @@
-from DatabaseItems.Song import Song
 from ImportsFile import *
 
 decimalPoints = GlobalValues.decimalPoints
@@ -9,9 +8,11 @@ class Recording:
     def __init__(self, path):
         self.timeFrequencyPoints = []
 
+        # a list of lists of points.
         self.targetZones = []
 
-        self.anchorPointTargetZoneDict = {}  # key - anchor point, value - target zone
+        # key - anchor point, value - target zone
+        self.anchorPointTargetZoneDict = {}
 
         # self.addressCouplesList = []
 
@@ -22,9 +23,11 @@ class Recording:
 
         # key - songId, value - the number of time is part of a key in the songIdTable
         self.songIdNumOfKeysTable = {}
+
         # key - songId, value - a list of deltas of the anchor time for each songId.
         self.songIdDeltaDict = {}
 
+        # the path to the wav file of that recording.
         self.dataPath = path
 
     """
@@ -49,7 +52,6 @@ class Recording:
     """
 
     def createConstellationMap(self):
-        # sampleRate, data = scipy.io.wavfile.read('C:\PythonProject\Songs\AdventureOfALifetime100115R.wav')
         try:
             sampleRate, data = scipy.io.wavfile.read(self.dataPath)
             self.timeFrequencyPoints = createFilteredSpectrogramPoints(list(data))
@@ -69,12 +71,7 @@ class Recording:
         for anchorPoint, targetZone in self.anchorPointTargetZoneDict.items():
             timeOfAnchor = round(anchorPoint[0], decimalPoints)
             for p in targetZone:
-                # tempAddress = str(int(round(anchorPoint[1], decimalPoints) * 1000)) + ',' + str(
-                #     int(round(p[1], decimalPoints) * 1000)) + ',' + str(
-                #     int(round(p[0] - anchorPoint[0], decimalPoints) * 1000))
-
                 delta = p[0] - anchorPoint[0]
-                # tempAddress = str(anchorPoint[1]) + ',' + str(p[1]) + ',' + str(int(round(delta, decimalPoints) * 10))
                 tempAddress = (anchorPoint[1], p[1], int(round(delta, decimalPoints) * 10))
 
             if tempAddress in self.addressAnchorTimeDict:
@@ -107,27 +104,13 @@ class Recording:
     number of target zones in the recording. 
     '''
 
-    def ssongIdTableFilter(self):
-        print("songIdTable:", self.songIdTable)
-
-        # temp = dict(filter(lambda element: element[1] > 2, self.songIdTable.items()))
-        # print("temp", temp)
-        # if temp is not {}:
-        #     print("temp isn't empty")
-        #     self.songIdTable = temp
-        #
-        # print("songIdTable:", self.songIdTable)
+    def songIdTableFilter(self):
         for couple in self.songIdTable.keys():
             if couple[1] in self.songIdNumOfKeysTable.keys():
                 self.songIdNumOfKeysTable[couple[1]] += 1
             else:
                 self.songIdNumOfKeysTable[couple[1]] = 1
 
-        if self.songIdNumOfKeysTable is not {}:
-            print(self.songIdNumOfKeysTable)
-            maxNumOfKeys = max(self.songIdNumOfKeysTable.items(), key=lambda x: x[1])[0]
-            print(maxNumOfKeys)
-
-        print("songIdNumOfKeysTable: ", self.songIdNumOfKeysTable)
+        print("songIdNumOfKeysTable: ", self.songIdNumOfKeysTable)  # debugging purposes
         self.songIdNumOfKeysTable = dict(
-            filter(lambda element: element[1] >= 100 * coefficient, self.songIdNumOfKeysTable.items()))
+            filter(lambda element: element[1] >= 50 * coefficient, self.songIdNumOfKeysTable.items()))

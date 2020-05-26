@@ -110,8 +110,11 @@ def averageValueOfBins(bands):
 
 
 '''
-this is the step 4, i think it means keeping the bin that are above the average of the 6 max bands. multiplied by a
-coefficient
+function name: passAboveTheMean.
+input: the bans dictionary as seen before.
+output: a list of the points whose amplitude is above the averageValue of the max of each band, multiplied by a 
+coefficient.
+operation: self explanatory.
 '''
 
 
@@ -123,7 +126,10 @@ def passAboveTheMean(bands):
 
 
 '''
-does this for just one fft sample.
+function name: filterFFT.
+input: the time-frequency points were getting from the fft.
+output: the peak points of that fft.
+operation: puts the points in the bands, keeps only the max of these bands and pass the points that are above the mean..
 '''
 
 

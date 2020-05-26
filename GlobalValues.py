@@ -1,5 +1,4 @@
-global decimalPoints, songIdFilterCoefficient, meanCoefficient, gs, targetSize, hammingWindowSize, \
-    lowPassFilterFrequency
+global decimalPoints, songIdFilterCoefficient, meanCoefficient, gs, targetSize, hammingWindowSize
 
 hammingWindowSize = 1024
 lowPassFilterFrequency = 5000

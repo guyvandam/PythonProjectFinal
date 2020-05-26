@@ -1,5 +1,4 @@
 from ImportsFile import *
-from DatabaseItems.Recording import Recording
 from DatabaseItems.Song import Song
 import pymongo
 
@@ -34,7 +33,6 @@ class FingerprintDatabase:
                                    '5': 'Animals by Maroon 5',
                                    '6': 'see you again by Wiz Khalifa'}
 
-        # self.songIdSongInfoDict = songIdSongInfoDict
 
         # key - songId, value - the song object.
         self.songIdSongObjectDict = {}
@@ -111,23 +109,9 @@ class FingerprintDatabase:
     '''
 
     def pullFingerprintDatabase(self):
-        # self.database = self.collection.find_one({'_id': 1})
-        # if self.database is None:
-        #     print('===== ERROR === error at find | pullFingerprintDatabase === ERROR =====')
-        #     exit(1)
-        # # for key,value in self.database.items():
-        # # self.database = dict(map(lambda x: tuple(x[0]), self.database.items()))
-        # # self.database = {stringToTuple(key): value for key, value in self.database.items()}
-        #
-        # self.database = {stringToTuple(key): [tuple(v) for v in value] for key, value in self.database.items() if
-        #                  not key == '_id'}
         self.StorageDatabase = self.collection.find_one({'_id': 1})
         assert self.StorageDatabase is not None, "===== ERROR === error at find | pullFingerprintDatabase === ERROR " \
                                                  "===== "
-        # for key,value in self.database.items():
-        # self.database = dict(map(lambda x: tuple(x[0]), self.database.items()))
-        # self.database = {stringToTuple(key): value for key, value in self.database.items()}
-
         self.database = {stringToTuple(key): [tuple(v) for v in value] for key, value in self.StorageDatabase.items() if
                          not key == '_id'}
 
@@ -173,10 +157,6 @@ class FingerprintDatabase:
     def databaseUpdateDECIMAL(self, song):
         addressCoupleDict = song.addressCoupleDict
         for key, value in addressCoupleDict.items():  # the key is an address
-            # if key in self.database:
-            #     self.database[key] += value
-            # else:
-            #     self.database[key] = value
             if key in self.StorageDatabase:
                 self.StorageDatabase[key] += value
             else:
@@ -212,7 +192,6 @@ class FingerprintDatabase:
             return "didn't find anything :("
         elif len(songIdList) == 1:
             return self.songIdSongInfoDict[songIdList[0]]
-        # return self.songIdSongInfoDict[max(recording.songIdNumOfKeysTable.items(), key=lambda tup: tup[1])[0]]
 
         # initialize the songIdDeltaDict for future use.
         recording.songIdDeltaDict = {songId: [] for songId in songIdList}
@@ -227,11 +206,6 @@ class FingerprintDatabase:
                         deltaList = [abs(anchorTime - couple[0]) for couple in tempAddressCoupleDict[stringAddress]]
                         recording.songIdDeltaDict[songId] += deltaList
 
-                        # if songId in recording.songIdDeltaDict.keys():
-                        #     recording.songIdDeltaDict[songId] += deltaList
-                        # else:
-                        #     recording.songIdDeltaDict[songId] = deltaList
-
         # finds the delta that appear the most in the list, set the number of appearance to be the new value of the dict
         temp = {key: max(listOfDeltas, key=listOfDeltas.count) for key, listOfDeltas in
                 recording.songIdDeltaDict.items()}
@@ -243,7 +217,10 @@ class FingerprintDatabase:
         return self.songIdSongInfoDict[max(recording.songIdDeltaDict.items(), key=lambda x: x[1])[0]]
 
     """
-    function name: show
+    function name: showCollection.
+    input: N/A
+    output: N/A
+    operation: prints the 2 dictionaries in the collection.
     """
 
     def showCollection(self):
@@ -262,37 +239,3 @@ class FingerprintDatabase:
         self.collection.drop()
         self.collection.insert_one({"_id": 1})
         self.collection.insert_one({"_id": 2})
-
-# if __name__ == '__main__':
-#     # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-#
-#     # database = myclient["mydatabase"]
-#     # collection = database["Database collection"]
-#
-#     pathSongIdDict = {r'C:\PythonProject2\DatabaseSongs\BrunoMarsTreasure.wav': "1",
-#                       r'C:\PythonProject2\DatabaseSongs\ColdplayAdventureOfALifetime.wav': "2",
-#                       r'C:\PythonProject2\DatabaseSongs\ColdplayHymnForTheWeekend.wav': "3",
-#                       r'C:\PythonProject2\DatabaseSongs\Darlin.wav': "4",
-#                       r'C:\PythonProject2\DatabaseSongs\Maroon5Animals.wav': "5",
-#                       r'C:\PythonProject2\DatabaseSongs\WizKhalifaSeeYouAgain.wav': "6"}
-#     fingerprintDatabase = FingerprintDatabase()
-#     # fingerprintDatabase.createNewDatabase()
-#     fingerprintDatabase.showCollection()
-#     # fingerprintDatabase.loadMany(pathSongIdDict)
-#
-# # songIdSongInfoDict = {'1': 'Treasure by Bruno Mars',
-# #                       '2': 'Adventure of a lifetime by Coldplay',
-# #                       '3': 'Hymn for the weekend by Coldplay',
-# #                       '4': "darlin' by the Beach boys",
-# #                       '5': 'Animals by Maroon 5',
-# #                       '6': 'see you again by Wiz Khalifa'}
-#
-# # fingerprintDB = FingerprintDatabase()
-# # fingerprintDatabase.load(r'C:\PythonProject2\DatabaseSongs\BrunoMarsTreasure.wav', '1')
-# # fingerprintDatabase.load(r'C:\PythonProject2\DatabaseSongs\ColdplayAdventureOfALifetime.wav', '2')
-# # fingerprintDB.load(r'C:\PythonProject2\DatabaseSongs\ColdplayHymnForTheWeekend.wav','3')
-# # fingerprintDB.showCollection()
-#
-#     r = Recording("blah")
-#     r.initializeAll()
-#     fingerprintDatabase.searchInDatabase(r)

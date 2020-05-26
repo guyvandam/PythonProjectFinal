@@ -9,23 +9,6 @@ operation: creates a list of 5 consecutive points, until it runs out of points. 
 
 
 def createTargetZones(timeFrequencyPoints):
-    # i = 0
-    # targetZones = []
-    # targetSize = 5
-    # while i < len(time_frequencyPoints):
-    #     temp = []
-    #     j = i
-    #
-    #     while j < targetSize + i <= len(time_frequencyPoints) and j < len(time_frequencyPoints):
-    #         temp.append(time_frequencyPoints[j])
-    #         j += 1
-    #
-    #     if temp:
-    #         targetZones.append(temp)
-    #
-    #     i += 1
-    #
-    # return targetZones
     targetSize = GlobalValues.targetSize
     targetZones = []
     for i in range(len(timeFrequencyPoints) - targetSize + 1):

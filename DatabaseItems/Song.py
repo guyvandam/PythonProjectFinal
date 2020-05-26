@@ -8,15 +8,13 @@ class Song:
     def __init__(self, path, songID):
         self.path = path
         self.songID = songID
-
+        # a list of 2-item-tuples
         self.timeFrequencyPoints = []
-
+        # list of lists of points.
         self.targetZones = []
-
-        self.anchorPointTargetZoneDict = {}  # key - anchor point, value - target zone
-
-        self.addressCouplesList = []
-
+        # key - anchor point, value - target zone
+        self.anchorPointTargetZoneDict = {}
+        # key - address, value - a list of couple associated with this address.
         self.addressCoupleDict = {}
 
     """
@@ -28,10 +26,6 @@ class Song:
     """
 
     def initializeAll(self):
-
-        # self.timeFrequencyPoints = [(1, 10), (1, 20), (1, 30), (2, 10), (3, 10), (3, 20), (3, 30), (4, 20), (4, 30),
-        #                             (5, 20), (6, 10)]
-
         self.createConstellationMap()
         self.targetZones = createTargetZones(self.timeFrequencyPoints)
         self.anchorPointTargetZoneDict = createAnchorPoints(self.timeFrequencyPoints, self.targetZones)
@@ -63,10 +57,6 @@ class Song:
         for anchorPoint, targetZone in self.anchorPointTargetZoneDict.items():
             couple = (round(anchorPoint[0], decimalPoints), self.songID)
             for p in targetZone:
-                # tempAddress = str(int(round(anchorPoint[1], decimalPoints) * 1000)) + ',' + str(
-                #     int(round(p[1], decimalPoints) * 1000)) + ',' + str(
-                #     int(round(p[0] - anchorPoint[0], decimalPoints) * 1000))
-
                 delta = p[0] - anchorPoint[0]
                 tempAddress = str(int(anchorPoint[1])) + ',' + str(int(p[1])) + ',' + str(
                     int(round(delta, decimalPoints) * 10))
