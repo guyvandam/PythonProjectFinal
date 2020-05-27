@@ -53,6 +53,7 @@ class Recording:
 
     def createConstellationMap(self):
         try:
+
             sampleRate, data = scipy.io.wavfile.read(self.dataPath)
             self.timeFrequencyPoints = createFilteredSpectrogramPoints(list(data))
         except:
@@ -105,6 +106,7 @@ class Recording:
     '''
 
     def songIdTableFilter(self):
+
         for couple in self.songIdTable.keys():
             if couple[1] in self.songIdNumOfKeysTable.keys():
                 self.songIdNumOfKeysTable[couple[1]] += 1

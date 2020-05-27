@@ -88,4 +88,5 @@ class DatabaseServer:
 
 if __name__ == '__main__':
     server = DatabaseServer()
+    server.showCollection()
     server.run()

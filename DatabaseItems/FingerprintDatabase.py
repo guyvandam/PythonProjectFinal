@@ -26,16 +26,7 @@ class FingerprintDatabase:
 
         self.StorageDatabase = {}
 
-        self.songIdSongInfoDict = {'1': 'Treasure by Bruno Mars',
-                                   '2': 'Adventure of a lifetime by Coldplay',
-                                   '3': 'Hymn for the weekend by Coldplay',
-                                   '4': "darlin' by the Beach boys",
-                                   '5': 'Animals by Maroon 5',
-                                   '6': 'see you again by Wiz Khalifa'}
-
-
-        # key - songId, value - the song object.
-        self.songIdSongObjectDict = {}
+        self.songIdSongInfoDict = {}
 
         self.songIdAddressCoupleDict = {}
 
@@ -46,19 +37,18 @@ class FingerprintDatabase:
     operation: self explanatory. calls the load function for every item in the database.
     '''
 
-    def loadMany(self, pathIdDict):
-        self.pullFingerprintDatabase()
-        self.pullSongIdAddressCoupleDict()
+    def loadMany(self, songIdPathDict, songIdInfoDict):
+        self.pullAll()
 
-        for path, songId in pathIdDict.items():
-            print("loading songId: ", songId)
+        for songId, path in songIdPathDict.items():
+            print("loading:", songIdInfoDict[songId])
             temp = Song(path, songId)
             temp.initializeAll()
             self.databaseUpdateDECIMAL(temp)
             self.songIdAddressCoupleDict[songId] = temp.addressCoupleDict
+            self.songIdSongInfoDict[songId] = songIdInfoDict[songId]
 
-        self.saveFingerprintDatabase()
-        self.saveSongIdAddressCoupleDict()
+        self.pushAll()
 
     ''' 
     function name: load.
@@ -69,19 +59,18 @@ class FingerprintDatabase:
     of one object, so it can be expanded in the future.
     '''
 
-    def load(self, path, songId):
-        self.pullFingerprintDatabase()
-        self.pullSongIdAddressCoupleDict()
+    def load(self, path, songId, songInfo):
+        self.pullAll()
 
-        print("loading songId: ", songId)
+        print("loading: ", songInfo)
         temp = Song(path, songId)
         temp.initializeAll()
 
         self.databaseUpdateDECIMAL(temp)
         self.songIdAddressCoupleDict[songId] = temp.addressCoupleDict
+        self.songIdSongInfoDict[songId] = songInfo
 
-        self.saveFingerprintDatabase()
-        self.saveSongIdAddressCoupleDict()
+        self.pushAll()
 
     '''
     function name: saveDatabase.
@@ -90,13 +79,13 @@ class FingerprintDatabase:
     operation: saves the database changes to memory.
     '''
 
-    def saveFingerprintDatabase(self):
+    def pushFingerprintDatabase(self):
         self.collection.delete_one({"_id": 1})
         try:
             self.StorageDatabase["_id"] = 1
             self.collection.insert_one(self.StorageDatabase)
         except pymongo.errors.DuplicateKeyError:
-            print('===== ERROR === KEY EXISTS === ERROR =====')
+            print('===== ERROR === DuplicateKeyError for dict 1 === ERROR =====')
             exit(1)
         else:
             print('===== FINGERPRINT DATABASE SAVED SUCCESSFULLY =====')
@@ -109,9 +98,8 @@ class FingerprintDatabase:
     '''
 
     def pullFingerprintDatabase(self):
-        self.StorageDatabase = self.collection.find_one({'_id': 1})
-        assert self.StorageDatabase is not None, "===== ERROR === error at find | pullFingerprintDatabase === ERROR " \
-                                                 "===== "
+        self.StorageDatabase = self.collection.find_one({"_id": 1})
+        assert self.StorageDatabase, "===== ERROR === error at pullFingerprintDatabase === ERROR ===== "
         self.database = {stringToTuple(key): [tuple(v) for v in value] for key, value in self.StorageDatabase.items() if
                          not key == '_id'}
 
@@ -122,14 +110,14 @@ class FingerprintDatabase:
     operation: saves the songIdDict to changes to memory.
     '''
 
-    def saveSongIdAddressCoupleDict(self):
+    def pushSongIdAddressCoupleDict(self):
         self.collection.delete_one({"_id": 2})
         try:
             self.collection.insert_one(self.songIdAddressCoupleDict)
         except pymongo.errors.DuplicateKeyError:
-            print('===== ERROR === KEY EXISTS === ERROR =====')
+            print('===== ERROR === DuplicateKeyError for dict 2 === ERROR =====')
         else:
-            print('===== SAVED SUCCESSFULLY =====')
+            print('===== SongIdAddressCoupleDict SAVED SUCCESSFULLY =====')
 
     '''
     function name: pullSongIdAddressCoupleDict
@@ -140,9 +128,31 @@ class FingerprintDatabase:
 
     def pullSongIdAddressCoupleDict(self):
         self.songIdAddressCoupleDict = self.collection.find_one({"_id": 2})
-        if self.database is None:
-            print('===== ERROR === error at find_one === ERROR =====')
-            exit(1)
+        assert self.songIdAddressCoupleDict, "===== ERROR === error at pullFingerprintDatabase === ERROR ===== "
+
+    def pushSongIdSongInfoDict(self):
+        self.collection.delete_one({"_id": 3})
+        try:
+            self.collection.insert_one(self.songIdSongInfoDict)
+        except pymongo.errors.DuplicateKeyError:
+            print('===== ERROR === DuplicateKeyError for dict 3 === ERROR =====')
+        else:
+            print('===== SongIdSongInfoDict SAVED SUCCESSFULLY =====')
+
+    def pullSongIdSongInfoDict(self):
+        self.songIdSongInfoDict = self.collection.find_one({"_id": 3})
+        assert self.songIdSongInfoDict, "===== ERROR === error at pullSongIdSongInfoDict === ERROR " \
+                                        "===== "
+
+    def pullAll(self):
+        self.pullFingerprintDatabase()
+        self.pullSongIdAddressCoupleDict()
+        self.pullSongIdSongInfoDict()
+
+    def pushAll(self):
+        self.pushFingerprintDatabase()
+        self.pushSongIdAddressCoupleDict()
+        self.pushSongIdSongInfoDict()
 
     '''
     function name: databaseUpdateDECIMAL
@@ -239,3 +249,24 @@ class FingerprintDatabase:
         self.collection.drop()
         self.collection.insert_one({"_id": 1})
         self.collection.insert_one({"_id": 2})
+        self.collection.insert_one({"_id": 3})
+
+
+if __name__ == '__main__':
+    songIdSongInfoDict = {'1': 'Treasure by Bruno Mars',
+                          '2': 'Adventure of a lifetime by Coldplay',
+                          '3': 'Hymn for the weekend by Coldplay',
+                          '4': "darlin' by the Beach boys",
+                          '5': 'Animals by Maroon 5',
+                          '6': 'see you again by Wiz Khalifa'}
+
+    songIdPath = {'1': r"C:\PythonProject2\DatabaseSongs\BrunoMarsTreasure.wav",
+                  '2': r"C:\PythonProject2\DatabaseSongs\ColdplayAdventureOfALifetime.wav",
+                  '3': r"C:\PythonProject2\DatabaseSongs\ColdplayHymnForTheWeekend.wav",
+                  '4': r"C:\PythonProject2\DatabaseSongs\Darlin.wav",
+                  '5': r"C:\PythonProject2\DatabaseSongs\Maroon5Animals.wav",
+                  '6': r"C:\PythonProject2\DatabaseSongs\WizKhalifaSeeYouAgain.wav"}
+
+    db = FingerprintDatabase()
+    # db.createNewDatabase()
+    # db.loadMany(songIdPath, songIdSongInfoDict)
