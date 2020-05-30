@@ -130,6 +130,13 @@ class FingerprintDatabase:
         self.songIdAddressCoupleDict = self.collection.find_one({"_id": 2})
         assert self.songIdAddressCoupleDict, "===== ERROR === error at pullFingerprintDatabase === ERROR ===== "
 
+    """
+    function name: pushSongIdSongInfoDict.
+    input: N/A
+    output: N/A.
+    operation: saves the songIdSongInfoDict to memory.
+    """
+
     def pushSongIdSongInfoDict(self):
         self.collection.delete_one({"_id": 3})
         try:
@@ -139,15 +146,36 @@ class FingerprintDatabase:
         else:
             print('===== SongIdSongInfoDict SAVED SUCCESSFULLY =====')
 
+    """
+    function name: pullSongIdSongInfoDict.
+    input: N/A
+    output: N/A.
+    operation: pulls the songIdSongInfoDict from memory.
+    """
+
     def pullSongIdSongInfoDict(self):
         self.songIdSongInfoDict = self.collection.find_one({"_id": 3})
         assert self.songIdSongInfoDict, "===== ERROR === error at pullSongIdSongInfoDict === ERROR " \
                                         "===== "
 
+    """
+   function name: pullAll.
+   input: N/A
+   output: N/A.
+   operation: pulls the fingerprintDatabase, SongIdAddressCoupleDict and songIdSongInfoDict from memory.
+   """
+
     def pullAll(self):
         self.pullFingerprintDatabase()
         self.pullSongIdAddressCoupleDict()
         self.pullSongIdSongInfoDict()
+
+    """
+    function name: pushAll.
+    input: N/A
+    output: N/A.
+    operation: saves the fingerprintDatabase, SongIdAddressCoupleDict and songIdSongInfoDict to memory.
+    """
 
     def pushAll(self):
         self.pushFingerprintDatabase()
@@ -180,8 +208,7 @@ class FingerprintDatabase:
     '''
 
     def searchInDatabase(self, recording):
-        self.pullFingerprintDatabase()
-        self.pullSongIdAddressCoupleDict()
+        self.pullAll()
         for address in recording.addressAnchorTimeDict.keys():
             if address in self.database.keys():
                 recording.songIdTableUpdate(self.database[address])
@@ -223,8 +250,8 @@ class FingerprintDatabase:
         recording.songIdDeltaDict = {key: listOfDeltas.count(temp[key]) for key, listOfDeltas in
                                      recording.songIdDeltaDict.items()}
         print("songIdDeltaDict: ", recording.songIdDeltaDict)
-        # prints the songId of the delta the have the max appearances in the delta list.
-        return self.songIdSongInfoDict[max(recording.songIdDeltaDict.items(), key=lambda x: x[1])[0]]
+        prediction = self.songIdSongInfoDict[max(recording.songIdDeltaDict.items(), key=lambda x: x[1])[0]]
+        return prediction
 
     """
     function name: showCollection.
@@ -250,23 +277,3 @@ class FingerprintDatabase:
         self.collection.insert_one({"_id": 1})
         self.collection.insert_one({"_id": 2})
         self.collection.insert_one({"_id": 3})
-
-
-if __name__ == '__main__':
-    songIdSongInfoDict = {'1': 'Treasure by Bruno Mars',
-                          '2': 'Adventure of a lifetime by Coldplay',
-                          '3': 'Hymn for the weekend by Coldplay',
-                          '4': "darlin' by the Beach boys",
-                          '5': 'Animals by Maroon 5',
-                          '6': 'see you again by Wiz Khalifa'}
-
-    songIdPath = {'1': r"C:\PythonProject2\DatabaseSongs\BrunoMarsTreasure.wav",
-                  '2': r"C:\PythonProject2\DatabaseSongs\ColdplayAdventureOfALifetime.wav",
-                  '3': r"C:\PythonProject2\DatabaseSongs\ColdplayHymnForTheWeekend.wav",
-                  '4': r"C:\PythonProject2\DatabaseSongs\Darlin.wav",
-                  '5': r"C:\PythonProject2\DatabaseSongs\Maroon5Animals.wav",
-                  '6': r"C:\PythonProject2\DatabaseSongs\WizKhalifaSeeYouAgain.wav"}
-
-    db = FingerprintDatabase()
-    # db.createNewDatabase()
-    # db.loadMany(songIdPath, songIdSongInfoDict)

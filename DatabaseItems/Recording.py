@@ -53,11 +53,10 @@ class Recording:
 
     def createConstellationMap(self):
         try:
-
             sampleRate, data = scipy.io.wavfile.read(self.dataPath)
             self.timeFrequencyPoints = createFilteredSpectrogramPoints(list(data))
         except:
-            return "error in reading the wav file..."
+            print("error in reading the wav file...")
 
     """
     function name: createAddresses 
@@ -107,12 +106,17 @@ class Recording:
 
     def songIdTableFilter(self):
 
+        if self.songIdTable:
+            self.songIdTable = dict(filter(lambda element: element[1] > 1, self.songIdTable.items()))
+
+        if not self.songIdTable:
+            return
+
         for couple in self.songIdTable.keys():
             if couple[1] in self.songIdNumOfKeysTable.keys():
                 self.songIdNumOfKeysTable[couple[1]] += 1
             else:
                 self.songIdNumOfKeysTable[couple[1]] = 1
 
-        print("songIdNumOfKeysTable: ", self.songIdNumOfKeysTable)  # debugging purposes
         self.songIdNumOfKeysTable = dict(
-            filter(lambda element: element[1] >= 50 * coefficient, self.songIdNumOfKeysTable.items()))
+            filter(lambda element: element[1] >= 20 * coefficient, self.songIdNumOfKeysTable.items()))
