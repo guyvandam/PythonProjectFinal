@@ -249,7 +249,6 @@ class FingerprintDatabase:
 
         recording.songIdDeltaDict = {key: listOfDeltas.count(temp[key]) for key, listOfDeltas in
                                      recording.songIdDeltaDict.items()}
-        print("songIdDeltaDict: ", recording.songIdDeltaDict)
         prediction = self.songIdSongInfoDict[max(recording.songIdDeltaDict.items(), key=lambda x: x[1])[0]]
         return prediction
 
