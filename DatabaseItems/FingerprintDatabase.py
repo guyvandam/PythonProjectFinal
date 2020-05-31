@@ -44,7 +44,7 @@ class FingerprintDatabase:
             print("loading:", songIdInfoDict[songId])
             temp = Song(path, songId)
             temp.initializeAll()
-            self.databaseUpdateDECIMAL(temp)
+            self.databaseUpdate(temp)
             self.songIdAddressCoupleDict[songId] = temp.addressCoupleDict
             self.songIdSongInfoDict[songId] = songIdInfoDict[songId]
 
@@ -66,7 +66,7 @@ class FingerprintDatabase:
         temp = Song(path, songId)
         temp.initializeAll()
 
-        self.databaseUpdateDECIMAL(temp)
+        self.databaseUpdate(temp)
         self.songIdAddressCoupleDict[songId] = temp.addressCoupleDict
         self.songIdSongInfoDict[songId] = songInfo
 
@@ -192,7 +192,7 @@ class FingerprintDatabase:
     of one object, so it can be expanded in the future.
     '''
 
-    def databaseUpdateDECIMAL(self, song):
+    def databaseUpdate(self, song):
         addressCoupleDict = song.addressCoupleDict
         for key, value in addressCoupleDict.items():  # the key is an address
             if key in self.StorageDatabase:

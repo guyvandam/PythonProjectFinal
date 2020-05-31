@@ -98,10 +98,9 @@ class Recording:
     input: N/A 
     output: N/A 
     operation: we go through the songIdTable, removing 
-    all the couples who's value is less than 2 (i.e couldn't form a target zone), than we go through the 
+    all the couples who's value is less than 2, than we go through the 
     songIdTable again, counting the number of time each songId appeared in a key (a couple) of the hash table (
-    putting it in a new hash table). we remove the song whose number is below 20*coefficient, because 20 is the 
-    number of target zones in the recording. 
+    putting it in a new hash table). we remove the song whose number is below 20*coefficient.
     '''
 
     def songIdTableFilter(self):
