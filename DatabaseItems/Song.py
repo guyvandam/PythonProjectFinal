@@ -40,10 +40,14 @@ class Song:
     """
 
     def createConstellationMap(self):
-        sampleRate, data = wavefile.read(self.path)
-        sampleRate, data = prepareForSpectrogram(sampleRate, data)
-        self.timeFrequencyPoints = createFilteredSpectrogramPoints(data)
 
+        try:
+            sampleRate, data = wavefile.read(self.path)
+            sampleRate, data = prepareForSpectrogram(sampleRate, data)
+            self.timeFrequencyPoints = createFilteredSpectrogramPoints(data)
+        except Exception as wavFileException:
+            print("error in reading the wav file for path:", self.path)
+            raise wavFileException
     """
         function name: createAddresses 
         input: N/A 

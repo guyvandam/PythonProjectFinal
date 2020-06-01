@@ -24,7 +24,7 @@ class FingerprintDatabase:
         # key - an address, value - a list of couples matching the key.
         self.database = {}
 
-        self.StorageDatabase = {}
+        self.storageDatabase = {}
 
         self.songIdSongInfoDict = {}
 
@@ -38,16 +38,20 @@ class FingerprintDatabase:
     '''
 
     def loadMany(self, songIdPathDict, songIdInfoDict):
+        if not songIdPathDict or not songIdInfoDict:
+            return
         self.pullAll()
 
         for songId, path in songIdPathDict.items():
             print("loading:", songIdInfoDict[songId])
             temp = Song(path, songId)
-            temp.initializeAll()
-            self.databaseUpdate(temp)
-            self.songIdAddressCoupleDict[songId] = temp.addressCoupleDict
-            self.songIdSongInfoDict[songId] = songIdInfoDict[songId]
-
+            try:
+                temp.initializeAll()
+                self.databaseUpdate(temp)
+                self.songIdAddressCoupleDict[songId] = temp.addressCoupleDict
+                self.songIdSongInfoDict[songId] = songIdInfoDict[songId]
+            except:
+                pass
         self.pushAll()
 
     ''' 
@@ -82,13 +86,13 @@ class FingerprintDatabase:
     def pushFingerprintDatabase(self):
         self.collection.delete_one({"_id": 1})
         try:
-            self.StorageDatabase["_id"] = 1
-            self.collection.insert_one(self.StorageDatabase)
+            self.storageDatabase["_id"] = 1
+            self.collection.insert_one(self.storageDatabase)
         except pymongo.errors.DuplicateKeyError:
             print('===== ERROR === DuplicateKeyError for dict 1 === ERROR =====')
             exit(1)
         else:
-            print('===== FINGERPRINT DATABASE SAVED SUCCESSFULLY =====')
+            print('===== changes to fingerprintDatabase SAVED SUCCESSFULLY =====')
 
     '''
     function name: pullDatabase
@@ -98,9 +102,9 @@ class FingerprintDatabase:
     '''
 
     def pullFingerprintDatabase(self):
-        self.StorageDatabase = self.collection.find_one({"_id": 1})
-        assert self.StorageDatabase, "===== ERROR === error at pullFingerprintDatabase === ERROR ===== "
-        self.database = {stringToTuple(key): [tuple(v) for v in value] for key, value in self.StorageDatabase.items() if
+        self.storageDatabase = self.collection.find_one({"_id": 1})
+        assert self.storageDatabase, "===== ERROR === error at pullFingerprintDatabase === ERROR ===== "
+        self.database = {stringToTuple(key): [tuple(v) for v in value] for key, value in self.storageDatabase.items() if
                          not key == '_id'}
 
     '''
@@ -117,7 +121,7 @@ class FingerprintDatabase:
         except pymongo.errors.DuplicateKeyError:
             print('===== ERROR === DuplicateKeyError for dict 2 === ERROR =====')
         else:
-            print('===== SongIdAddressCoupleDict SAVED SUCCESSFULLY =====')
+            print('===== changes to songIdAddressCoupleDict SAVED SUCCESSFULLY =====')
 
     '''
     function name: pullSongIdAddressCoupleDict
@@ -144,7 +148,7 @@ class FingerprintDatabase:
         except pymongo.errors.DuplicateKeyError:
             print('===== ERROR === DuplicateKeyError for dict 3 === ERROR =====')
         else:
-            print('===== SongIdSongInfoDict SAVED SUCCESSFULLY =====')
+            print('===== changes to songIdSongInfoDict SAVED SUCCESSFULLY =====')
 
     """
     function name: pullSongIdSongInfoDict.
@@ -195,10 +199,10 @@ class FingerprintDatabase:
     def databaseUpdate(self, song):
         addressCoupleDict = song.addressCoupleDict
         for key, value in addressCoupleDict.items():  # the key is an address
-            if key in self.StorageDatabase:
-                self.StorageDatabase[key] += value
+            if key in self.storageDatabase:
+                self.storageDatabase[key] += value
             else:
-                self.StorageDatabase[key] = value
+                self.storageDatabase[key] = value
 
     '''
     function name: searchInDatabase
